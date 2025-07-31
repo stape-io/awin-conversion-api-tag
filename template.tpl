@@ -158,7 +158,7 @@ ___TEMPLATE_PARAMETERS___
             "selectItems": [
               {
                 "value": false,
-                "displayValue": "False"
+                "displayValue": "false"
               },
               {
                 "value": true,
