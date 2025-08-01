@@ -1,0 +1,5 @@
+homepage: 'https://stape.io/'
+documentation: 'https://github.com/stape-io/awin-conversion-api-tag'
+versions:
+  - sha: 5417960a2956bfebd98794299d1a74e4780d2ab3
+    changeNotes: Initial release.
