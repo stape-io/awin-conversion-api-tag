@@ -770,7 +770,7 @@ function parseClickIdFromUrl(eventData) {
   }
 }
 
-function getClickId(eventData) {
+function getClickId(data, eventData) {
   const commonCookie = eventData.commonCookie || {};
   const awinAwcCookie = getCookieValues('awin_awc')[0] || commonCookie.awin_awc;
   const awinAwcSnCookie = getCookieValues('awin_sn_awc')[0] || commonCookie.awin_sn_awc;
@@ -789,7 +789,7 @@ function getClickId(eventData) {
   return;
 }
 
-function parseDeduplicationParamFromUrl(eventData) {
+function parseDeduplicationParamFromUrl(data, eventData) {
   const url = eventData.page_location || getRequestHeader('referer');
   if (!url) return;
 
@@ -852,7 +852,7 @@ function parseDeduplicationParamFromUrl(eventData) {
   return 'direct';
 }
 
-function getDeduplicationParamFromCookie(eventData) {
+function getDeduplicationParamFromCookie(data, eventData) {
   if (isConsentDeclined(data, eventData) && !data.enableCashbackTracking) return;
   return getCookieValues('awin_source')[0] || (eventData.commonCookie || {}).awin_source;
 }
@@ -880,8 +880,8 @@ function handlePageViewEvent(data, eventData) {
       setCookie(awcCookieName, clickId, cookieOptions, false);
     }
 
-    const deduplicationCookie = getDeduplicationParamFromCookie(eventData);
-    const deduplicationParamValue = parseDeduplicationParamFromUrl(eventData);
+    const deduplicationCookie = getDeduplicationParamFromCookie(data, eventData);
+    const deduplicationParamValue = parseDeduplicationParamFromUrl(data, eventData);
     const shouldOverwriteCookie = !!(
       deduplicationCookie &&
       deduplicationParamValue &&
@@ -1005,7 +1005,7 @@ function mapRequestData(data, eventData) {
 
   const channel = data.hasOwnProperty('channel')
     ? data.channel
-    : getDeduplicationParamFromCookie(eventData) || 'aw';
+    : getDeduplicationParamFromCookie(data, eventData) || 'aw';
   if (channel) order.channel = makeString(channel);
 
   addCommissionGroupsData(data, order);
@@ -1015,7 +1015,7 @@ function mapRequestData(data, eventData) {
   const voucher = data.hasOwnProperty('voucher') ? data.voucher : eventData.coupon;
   if (voucher) order.voucher = makeString(voucher);
 
-  const clickId = data.hasOwnProperty('clickId') ? data.clickId : getClickId(eventData);
+  const clickId = data.hasOwnProperty('clickId') ? data.clickId : getClickId(data, eventData);
   if (clickId) order.awc = clickId;
 
   if (data.publisherId) order.publisherId = makeInteger(data.publisherId);
