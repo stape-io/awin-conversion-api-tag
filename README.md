@@ -25,7 +25,7 @@ The tag captures two key pieces of information:
 1.  **Click IDs**: It looks for Awin's click identifiers in the URL.
     - `awc`: The standard Awin Click ID.
     - `awaid` and `gclid`: Awin and Google Click IDs used together for specific tracking scenarios.
-    - These values are stored in the `awin_awc` or `awin_sn_awc` cookies (if `sn=1` is present in the URL and the *Unconditional Cashback & Rewards Tracking* checkbox is enabled).
+    - These values are stored in the `awin_awc` cookie; or `awin_sn_awc` cookie, if `sn=1` is present in the URL and the *Unconditional Cashback & Rewards Tracking* checkbox is enabled.
 
 2.  **Last Click Referrer Channel**: Also known as the Deduplication Channel, this determines the source of the traffic to prevent duplicate commissions. The tag analyzes URL parameters (like `source`, `utm_source`, `gclid`, etc.) and the page referrer to determine the channel. The result is stored in the `awin_source` cookie and can be one of the following values:
     - `aw`: Set if an Awin source value (e.g., "awin", "aw") is found in the deduplication parameters, or if an Awin Click ID is present in the URL (only if explicitly enabled).
@@ -74,7 +74,7 @@ This section controls how the tag handles user consent for setting and reading a
 - **Consent Detection**: You can choose how the tag determines consent:
   - **Automatically**: The tag will check for consent signals from Google Consent Mode or Stape's Data Tag.
   - **Manually**: You can provide a custom variable that specifies the consent status (`true`/`false` or `1`/`0`).
-- **Enable Unconditional Cashback & Rewards Tracking**: This is a special setting for **Cashbacks & Rewards Journeys**. When enabled, the tag is allowed to set the necessary attribution cookies (`awin_sn_awc` and `awin_source`) even if the user has not given consent.
+- **Enable Unconditional Cashback & Rewards Tracking**: This is a special setting for **Cashbacks & Rewards Journeys**. When enabled, the tag is allowed to set the necessary attribution cookie (`awin_sn_awc`) and read them (`awin_sn_awc` and `awin_awc`) even if the user has not given consent.
 
 ## Useful resources
 
