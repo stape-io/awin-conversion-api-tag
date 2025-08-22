@@ -456,7 +456,7 @@ ___TEMPLATE_PARAMETERS___
       {
         "type": "LABEL",
         "name": "cookieConsentSettingsGroupLabel",
-        "displayName": "Specify the consent for setting and reading the \u003cb\u003eClick IDs\u003c/b\u003e cookies (\u003ci\u003eawin_awc\u003c/i\u003e and \u003ci\u003eawin_sn_awc\u003c/i\u003e), and \u003cb\u003eLast Click Referrer Channel\u003c/b\u003e cookie (\u003ci\u003eawin_source\u003c/i\u003e).\n\u003cbr/\u003e\nIf consent is granted, the cookies will be written and read. Otherwise, they will not."
+        "displayName": "Specify the consent for setting and reading the \u003cb\u003eClick IDs\u003c/b\u003e cookies (\u003ci\u003eawin_awc\u003c/i\u003e and \u003ci\u003eawin_sn_awc\u003c/i\u003e), and \u003cb\u003eLast Click Referrer Channel\u003c/b\u003e cookie (\u003ci\u003eawin_source\u003c/i\u003e).\n\u003cbr/\u003e\nIf consent it not set or is granted, the cookies will be written and read. Otherwise, they will not."
       },
       {
         "type": "SELECT",

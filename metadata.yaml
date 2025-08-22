@@ -1,6 +1,8 @@
 homepage: 'https://stape.io/'
 documentation: 'https://github.com/stape-io/awin-conversion-api-tag'
 versions:
+  - sha: 81a86a50791a5ac1f8c1b66e3c6449fea052bc28
+    changeNotes: Updated cookie consent section help text.
   - sha: 3b8c1c6f587a0bf0a47c2741932f9d55a084490d
     changeNotes: Small code improvements.
   - sha: 5417960a2956bfebd98794299d1a74e4780d2ab3
