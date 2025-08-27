@@ -286,10 +286,17 @@ ___TEMPLATE_PARAMETERS___
       },
       {
         "type": "TEXT",
-        "name": "clickId",
-        "displayName": "Awin Click ID",
+        "name": "clickIdAwc",
+        "displayName": "Awin Click ID (awin_awc cookie value)",
         "simpleValueType": true,
-        "help": "If left empty, this value will be automatically taken from the \u003ci\u003eawin_awc\u003c/i\u003e or \u003ci\u003eawin_sn_awc\u003c/i\u003e cookies (or the \u003ci\u003eeventData.common_cookie\u003c/i\u003e parameter), which are set on pages containing the Click IDs \u003ci\u003e{awc}\u003c/i\u003e or \u003ci\u003e{awaid} + {gclid}\u003c/i\u003e URL parameters.\n\u003cbr/\u003e\nOnly modify it if you have a custom implementation.\n\u003cbr/\u003e\u003cbr/\u003e\nAny of the following \u003cb\u003emust\u003c/b\u003e be present for a conversion to be valid:\n\u003cul\u003e\n\u003cli\u003e\u003ci\u003eAwin Click ID\u003c/i\u003e or;\u003c/li\u003e\n\u003cli\u003e\u003ci\u003eVoucher/Discount Code\u003c/i\u003e or;\u003c/li\u003e\n\u003cli\u003e\u003ci\u003ePublisher ID\u003c/i\u003e and \u003ci\u003eClick Time\u003c/i\u003e\u003c/li\u003e\n\u003c/ul\u003e"
+        "help": "If left empty, this value will be automatically taken from the \u003ci\u003eawin_awc\u003c/i\u003e cookie (or the \u003ci\u003eeventData.common_cookie\u003c/i\u003e parameter), which is set on pages containing the Click ID \u003ci\u003e{awc}\u003c/i\u003e URL parameter. This applies only if the \u003ci\u003eAwin Click ID (awin_sn_awc cookie value)\u003c/i\u003e field below is also left empty.\n\u003cbr/\u003e\u003cbr/\u003e\nOnly modify it if you have a custom implementation.\n\u003cbr/\u003e\u003cbr/\u003e\nAny of the following \u003cb\u003emust\u003c/b\u003e be present for a conversion to be valid:\n\u003cul\u003e\n\u003cli\u003e\u003ci\u003eAwin Click ID\u003c/i\u003e or;\u003c/li\u003e\n\u003cli\u003e\u003ci\u003eVoucher/Discount Code\u003c/i\u003e or;\u003c/li\u003e\n\u003cli\u003e\u003ci\u003ePublisher ID\u003c/i\u003e and \u003ci\u003eClick Time\u003c/i\u003e\u003c/li\u003e\n\u003c/ul\u003e"
+      },
+      {
+        "type": "TEXT",
+        "name": "clickIdSnAwc",
+        "displayName": "Awin Click ID (awin_sn_awc cookie value)",
+        "simpleValueType": true,
+        "help": "If left empty, this value will be automatically taken from the \u003ci\u003eawin_sn_awc\u003c/i\u003e cookie (or the \u003ci\u003eeventData.common_cookie\u003c/i\u003e parameter), which is set on pages containing the Click ID \u003ci\u003e{awaid} + {gclid}\u003c/i\u003e URL parameters. This applies only if the \u003ci\u003eAwin Click ID (awin_awc cookie value)\u003c/i\u003e field above is also left empty.\n\u003cbr/\u003e\u003cbr/\u003e\nOnly modify it if you have a custom implementation.\n\u003cbr/\u003e\u003cbr/\u003e\nAny of the following \u003cb\u003emust\u003c/b\u003e be present for a conversion to be valid:\n\u003cul\u003e\n\u003cli\u003e\u003ci\u003eAwin Click ID\u003c/i\u003e or;\u003c/li\u003e\n\u003cli\u003e\u003ci\u003eVoucher/Discount Code\u003c/i\u003e or;\u003c/li\u003e\n\u003cli\u003e\u003ci\u003ePublisher ID\u003c/i\u003e and \u003ci\u003eClick Time\u003c/i\u003e\u003c/li\u003e\n\u003c/ul\u003e"
       },
       {
         "type": "TEXT",
@@ -770,7 +777,11 @@ function parseClickIdFromUrl(eventData) {
   }
 }
 
-function getClickId(data, eventData) {
+function getClickIdFromUIField(data) {
+  return [data.clickIdAwc, data.clickIdSnAwc].filter((value) => value !== '0' && value).join(',');
+}
+
+function getClickIdFromCookie(data, eventData) {
   const commonCookie = eventData.commonCookie || {};
   const awinAwcCookie = getCookieValues('awin_awc')[0] || commonCookie.awin_awc;
   const awinAwcSnCookie = getCookieValues('awin_sn_awc')[0] || commonCookie.awin_sn_awc;
@@ -781,9 +792,9 @@ function getClickId(data, eventData) {
     const awcFromCookie = [awinAwcCookie, awinAwcSnCookie]
       .filter((cookieValue) => cookieValue)
       .join(',');
-    return data.clickId || awcFromCookie || clickIdFromUrl;
+    return awcFromCookie || clickIdFromUrl;
   } else if (data.enableCashbackTracking) {
-    return data.clickId || awinAwcSnCookie || clickIdFromUrl;
+    return awinAwcSnCookie || clickIdFromUrl;
   }
 
   return;
@@ -1015,7 +1026,10 @@ function mapRequestData(data, eventData) {
   const voucher = data.hasOwnProperty('voucher') ? data.voucher : eventData.coupon;
   if (voucher) order.voucher = makeString(voucher);
 
-  const clickId = data.hasOwnProperty('clickId') ? data.clickId : getClickId(data, eventData);
+  const clickId =
+    data.hasOwnProperty('clickIdAwc') || data.hasOwnProperty('clickIdSnAwc')
+      ? getClickIdFromUIField(data)
+      : getClickIdFromCookie(data, eventData);
   if (clickId) order.awc = clickId;
 
   if (data.publisherId) order.publisherId = makeInteger(data.publisherId);
@@ -2067,12 +2081,13 @@ scenarios:
     \  { orderReference: undefined },\n  { amount: undefined },\n  { currency: undefined\
     \ },\n  // { commissionGroups: undefined }, // No need. The code always adds a\
     \ value if none is set on the UI.\n  { channel: undefined }, // undefined on 'channel'\
-    \ makes to code ignore the fallbacks.\n  { clickId: undefined, voucher: undefined,\
-    \ publisherId: undefined, clickTime: undefined },\n  {\n    basket: [\n      {\
-    \ id: 'id', name: 'name', price: 1, quantity: 1 }, \n      { id: 'id', name: 'name',\
-    \ price: 1 }, \n      { name: 'name', price: 1, quantity: 1 }, \n    ]\n  }\n\
-    ].forEach((scenario) => {\n  const copyMockData = JSON.parse(JSON.stringify(originalMockData));\n\
-    \  mergeObj(copyMockData, scenario);\n  \n  runCode(copyMockData);\n  \n  assertApi('sendHttpRequest').wasNotCalled();\n\
+    \ makes to code ignore the fallbacks.\n  { clickIdAwc: undefined, clickIdSnAwc:\
+    \ undefined, voucher: undefined, publisherId: undefined, clickTime: undefined\
+    \ },\n  {\n    basket: [\n      { id: 'id', name: 'name', price: 1, quantity:\
+    \ 1 }, \n      { id: 'id', name: 'name', price: 1 }, \n      { name: 'name', price:\
+    \ 1, quantity: 1 }, \n    ]\n  }\n].forEach((scenario) => {\n  const copyMockData\
+    \ = JSON.parse(JSON.stringify(originalMockData));\n  mergeObj(copyMockData, scenario);\n\
+    \  \n  runCode(copyMockData);\n  \n  assertApi('sendHttpRequest').wasNotCalled();\n\
     \  assertApi('gtmOnSuccess').wasNotCalled();\n  assertApi('gtmOnFailure').wasCalled();\n\
     });\n"
 - name: '[Conversion] Request URL is correctly built'
@@ -2110,12 +2125,13 @@ scenarios:
 - name: '[Conversion] Source and Click ID Cookies are read and sent when Cookie Consent
     Auto or Manual is Granted'
   code: "const originalMockData = setAllMockDataByEventType('conversion', {\n  enableCashbackTracking:\
-    \ false\n});\n\nObject.delete(mockData, 'clickId');\nObject.delete(mockData, 'channel');\n\
-    \nmock('getCookieValues', (cookieName) => {\n  switch (cookieName) {\n    case\
-    \ 'awin_source': return ['awinSourceCookieValue'];\n    case 'awin_sn_awc': return\
-    \ ['awinSnAwcCookieValue'];\n    case 'awin_awc': return ['awinAwcCookieValue'];\n\
-    \  }\n  return [];\n});\n\nmock('sendHttpRequest', (requestUrl, callback, requestOptions,\
-    \ requestBody) => {\n  const parsedBody = JSON.parse(requestBody);\n  assertThat(parsedBody.orders[0].channel).isEqualTo('awinSourceCookieValue');\n\
+    \ false\n});\n\nObject.delete(mockData, 'clickIdAwc');\nObject.delete(mockData,\
+    \ 'clickIdSnAwc');\nObject.delete(mockData, 'channel');\n\nmock('getCookieValues',\
+    \ (cookieName) => {\n  switch (cookieName) {\n    case 'awin_source': return ['awinSourceCookieValue'];\n\
+    \    case 'awin_sn_awc': return ['awinSnAwcCookieValue'];\n    case 'awin_awc':\
+    \ return ['awinAwcCookieValue'];\n  }\n  return [];\n});\n\nmock('sendHttpRequest',\
+    \ (requestUrl, callback, requestOptions, requestBody) => {\n  const parsedBody\
+    \ = JSON.parse(requestBody);\n  assertThat(parsedBody.orders[0].channel).isEqualTo('awinSourceCookieValue');\n\
     \  assertThat(parsedBody.orders[0].awc).isEqualTo('awinAwcCookieValue,awinSnAwcCookieValue');\n\
     \  callback(200);\n});\n\n[\n  { cookieConsentDetection: undefined },\n  { cookieConsentDetection:\
     \ 'auto', cookieConsentAutoParameter: 'ad_storage' },\n  { cookieConsentDetection:\
@@ -2126,9 +2142,10 @@ scenarios:
 - name: '[Conversion] Source and Click ID Cookies are NOT sent in the request when
     Cookie Consent Auto or Manual is Denied'
   code: "const originalMockData = setAllMockDataByEventType('conversion', {\n  enableCashbackTracking:\
-    \ false\n});\n\nObject.delete(mockData, 'clickId');\nObject.delete(mockData, 'channel');\n\
-    \nsetGetAllEventData({\n  'x-ga-gcs': 'G100'\n});\n\nmock('getCookieValues', (cookieName)\
-    \ => {\n  switch (cookieName) {\n    case 'awin_source': return ['awinSourceCookieValue'];\n\
+    \ false\n});\n\nObject.delete(mockData, 'clickIdAwc');\nObject.delete(mockData,\
+    \ 'clickIdSnAwc');\nObject.delete(mockData, 'channel');\n\nsetGetAllEventData({\n\
+    \  'x-ga-gcs': 'G100'\n});\n\nmock('getCookieValues', (cookieName) => {\n  switch\
+    \ (cookieName) {\n    case 'awin_source': return ['awinSourceCookieValue'];\n\
     \    case 'awin_sn_awc': return ['awinSnAwcCookieValue'];\n    case 'awin_awc':\
     \ return ['awinAwcCookieValue'];\n  }\n  return [];\n});\n\nmock('sendHttpRequest',\
     \ (requestUrl, callback, requestOptions, requestBody) => {\n  const parsedBody\
@@ -2142,9 +2159,10 @@ scenarios:
 - name: '[Conversion] Source and Click ID Cookies are read and sent when Cookie Consent
     Auto or Manual is Denied but Unconditional Cashback & Rewards Tracking is Enabled'
   code: "const originalMockData = setAllMockDataByEventType('conversion', {\n  enableCashbackTracking:\
-    \ true\n});\n\nObject.delete(mockData, 'clickId');\nObject.delete(mockData, 'channel');\n\
-    \nsetGetAllEventData({\n  'x-ga-gcs': 'G100'\n});\n\nmock('getCookieValues', (cookieName)\
-    \ => {\n  switch (cookieName) {\n    case 'awin_source': return ['awinSourceCookieValue'];\n\
+    \ true\n});\n\nObject.delete(mockData, 'clickIdAwc');\nObject.delete(mockData,\
+    \ 'clickIdSnAwc');\nObject.delete(mockData, 'channel');\n\nsetGetAllEventData({\n\
+    \  'x-ga-gcs': 'G100'\n});\n\nmock('getCookieValues', (cookieName) => {\n  switch\
+    \ (cookieName) {\n    case 'awin_source': return ['awinSourceCookieValue'];\n\
     \    case 'awin_sn_awc': return ['awinSnAwcCookieValue'];\n    case 'awin_awc':\
     \ return ['awinAwcCookieValue'];\n  }\n  return [];\n});\n\nmock('sendHttpRequest',\
     \ (requestUrl, callback, requestOptions, requestBody) => {\n  const parsedBody\
@@ -2181,26 +2199,38 @@ scenarios:
     \ true\n  });\n  callback(200);\n});\n\nrunCode(mockData);\n\nassertApi('gtmOnSuccess').wasCalled();\n\
     assertApi('gtmOnFailure').wasNotCalled();"
 - name: '[Conversion] Request Body is correctly built and sent'
-  code: "setAllMockDataByEventType('conversion');\nsetGetAllEventData();\n\nmock('getContainerVersion',\
-    \ () => {\n  return {\n    containerId: 'containerId'\n  };\n}); \n\nmock('sendHttpRequest',\
-    \ (requestUrl, callback, requestOptions, requestBody) => {\n  const parsedBody\
-    \ = JSON.parse(requestBody);\n  assertThat(parsedBody).isEqualTo({\n    orders:\
-    \ [\n      {\n        orderReference: 'orderReference',\n        amount: 123,\n\
-    \        currency: 'BRL',\n        channel: 'aw',\n        commissionGroups: [{\
-    \ code: 'DVD', amount: 123 }],\n        voucher: 'voucher',\n        awc: '17662_1734591380_361006a3b4d393107eaa8fa111555237',\n\
-    \        publisherId: 222222222,\n        clickTime: 1111111111,\n        customerAcquisition:\
-    \ 'NEW',\n        transactionTime: 1111111111,\n        isTest: true,\n      \
-    \  basket: [\n          {\n            sku: 'SKU_12345',\n            id: 'SKU_12345',\n\
-    \            name: 'Stan and Friends Tee',\n            price: 10.01,\n      \
-    \      quantity: 3,\n            category: 'Apparel|iajsdiajsd|oasodiasd',\n \
-    \           commissionGroupCode: 'DEFAULT'\n          },\n          {\n      \
-    \      sku: 'SKU_12346',\n            id: 'SKU_12346',\n            name: \"Google\
-    \ Grey Women's (Tee)\",\n            price: 21.01,\n            quantity: 2,\n\
-    \            category: 'Apparel|iajsdiajsd|oasodiasd',\n            commissionGroupCode:\
-    \ 'DEFAULT'\n          }\n        ],\n        custom: { 1: 'gtm_s2s_stape_containerId',\
-    \ 2: 'test', 3: 123 }\n      }\n    ],\n    webhook: { url: 'https://example.com'\
-    \ }\n  });\n  callback(200);\n});\n\nrunCode(mockData);\n\nassertApi('gtmOnSuccess').wasCalled();\n\
-    assertApi('gtmOnFailure').wasNotCalled();"
+  code: "const originalMockData = setAllMockDataByEventType('conversion');\nsetGetAllEventData();\n\
+    \nmock('getContainerVersion', () => {\n  return {\n    containerId: 'containerId'\n\
+    \  };\n});\n\n[\n  { testCase: { clickIdAwc: '17662_1734591380_361006a3b4d393107eaa8fa111555237',\
+    \ clickIdSnAwc: 'gclid_123_abcd123' }, expectedAwc: '17662_1734591380_361006a3b4d393107eaa8fa111555237,gclid_123_abcd123'\
+    \ },\n  { testCase: { clickIdAwc: '17662_1734591380_361006a3b4d393107eaa8fa111555237',\
+    \ clickIdSnAwc: '0' }, expectedAwc: '17662_1734591380_361006a3b4d393107eaa8fa111555237'\
+    \ },\n  { testCase: { clickIdAwc: '0', clickIdSnAwc: 'gclid_123_abcd123' }, expectedAwc:\
+    \ 'gclid_123_abcd123' },\n  { testCase: { clickIdAwc: '17662_1734591380_361006a3b4d393107eaa8fa111555237',\
+    \ clickIdSnAwc: undefined }, expectedAwc: '17662_1734591380_361006a3b4d393107eaa8fa111555237'\
+    \ },\n  { testCase: { clickIdAwc: undefined, clickIdSnAwc: 'gclid_123_abcd123'\
+    \ }, expectedAwc: 'gclid_123_abcd123' },\n].forEach(scenario => {\n  const copyMockData\
+    \ = JSON.parse(JSON.stringify(originalMockData));\n  mergeObj(copyMockData, scenario.testCase);\n\
+    \  \n  mock('sendHttpRequest', (requestUrl, callback, requestOptions, requestBody)\
+    \ => {\n    const parsedBody = JSON.parse(requestBody);\n    assertThat(parsedBody).isEqualTo({\n\
+    \      orders: [\n        {\n          orderReference: 'orderReference',\n   \
+    \       amount: 123,\n          currency: 'BRL',\n          channel: 'aw',\n \
+    \         commissionGroups: [{ code: 'DVD', amount: 123 }],\n          voucher:\
+    \ 'voucher',\n          awc: scenario.expectedAwc,\n          publisherId: 222222222,\n\
+    \          clickTime: 1111111111,\n          customerAcquisition: 'NEW',\n   \
+    \       transactionTime: 1111111111,\n          isTest: true,\n          basket:\
+    \ [\n            {\n              sku: 'SKU_12345',\n              id: 'SKU_12345',\n\
+    \              name: 'Stan and Friends Tee',\n              price: 10.01,\n  \
+    \            quantity: 3,\n              category: 'Apparel|iajsdiajsd|oasodiasd',\n\
+    \              commissionGroupCode: 'DEFAULT'\n            },\n            {\n\
+    \              sku: 'SKU_12346',\n              id: 'SKU_12346',\n           \
+    \   name: \"Google Grey Women's (Tee)\",\n              price: 21.01,\n      \
+    \        quantity: 2,\n              category: 'Apparel|iajsdiajsd|oasodiasd',\n\
+    \              commissionGroupCode: 'DEFAULT'\n            }\n          ],\n \
+    \         custom: { 1: 'gtm_s2s_stape_containerId', 2: 'test', 3: 123 }\n    \
+    \    }\n      ],\n      webhook: { url: 'https://example.com' }\n    });\n   \
+    \ callback(200);\n  });\n  \n  runCode(copyMockData);\n  \n  assertApi('gtmOnSuccess').wasCalled();\n\
+    \  assertApi('gtmOnFailure').wasNotCalled();\n});\n\n"
 setup: "const JSON = require('JSON');\nconst Promise = require('Promise');\nconst\
   \ parseUrl = require('parseUrl');\nconst Object = require('Object');\n\nfunction\
   \ mergeObj(target, source) {\n  for (const key in source) {\n    if (source.hasOwnProperty(key))\
@@ -2265,11 +2295,12 @@ setup: "const JSON = require('JSON');\nconst Promise = require('Promise');\ncons
   \ {\n      type: 'conversion',\n      advertiserId: 'advertiserId',\n      apiKey:\
   \ 'apiKey',\n      orderReference: 'orderReference',\n      amount: '123',\n   \
   \   currency: 'BRL',\n      channel: 'aw',\n      commissionGroups: 'DVD',\n   \
-  \   voucher: 'voucher',\n      clickId: '17662_1734591380_361006a3b4d393107eaa8fa111555237',\n\
-  \      publisherId: '222222222',\n      clickTime: '1111111111',\n      customerAcquisition:\
-  \ 'NEW',\n      transactionTime: '1111111111',\n      isTest: true,\n      webhookUrl:\
-  \ 'https://example.com',\n      customParameters: [\n        { key: '2', value:\
-  \ 'test' },\n        { key: '3', value: 123 }\n      ]\n    }\n  };\n  \n  mergeObj(mockDataByEventType[type],\
+  \   voucher: 'voucher',\n      clickIdAwc: '17662_1734591380_361006a3b4d393107eaa8fa111555237',\n\
+  \      clickIdSnAwc: 'gclid_123_abcd123',\n      publisherId: '222222222',\n   \
+  \   clickTime: '1111111111',\n      customerAcquisition: 'NEW',\n      transactionTime:\
+  \ '1111111111',\n      isTest: true,\n      webhookUrl: 'https://example.com',\n\
+  \      customParameters: [\n        { key: '2', value: 'test' },\n        { key:\
+  \ '3', value: 123 }\n      ]\n    }\n  };\n  \n  mergeObj(mockDataByEventType[type],\
   \ objToBeMerged || {});\n  mergeObj(mockData, mockDataByEventType[type]);\n  return\
   \ mockData;\n};\n\nmock('sendHttpRequest', (requestUrl, callback, requestOptions,\
   \ requestBody) => {\n  if (typeof callback === 'function') {\n    callback(200);\n\
