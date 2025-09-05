@@ -91,7 +91,11 @@ function parseClickIdFromUrl(eventData) {
   }
 }
 
-function getClickId(data, eventData) {
+function getClickIdFromUIField(data) {
+  return [data.clickIdAwc, data.clickIdSnAwc].filter((value) => value !== '0' && value).join(',');
+}
+
+function getClickIdFromCookie(data, eventData) {
   const commonCookie = eventData.commonCookie || {};
   const awinAwcCookie = getCookieValues('awin_awc')[0] || commonCookie.awin_awc;
   const awinAwcSnCookie = getCookieValues('awin_sn_awc')[0] || commonCookie.awin_sn_awc;
@@ -102,9 +106,9 @@ function getClickId(data, eventData) {
     const awcFromCookie = [awinAwcCookie, awinAwcSnCookie]
       .filter((cookieValue) => cookieValue)
       .join(',');
-    return data.clickId || awcFromCookie || clickIdFromUrl;
+    return awcFromCookie || clickIdFromUrl;
   } else if (data.enableCashbackTracking) {
-    return data.clickId || awinAwcSnCookie || clickIdFromUrl;
+    return awinAwcSnCookie || clickIdFromUrl;
   }
 
   return;
@@ -336,7 +340,10 @@ function mapRequestData(data, eventData) {
   const voucher = data.hasOwnProperty('voucher') ? data.voucher : eventData.coupon;
   if (voucher) order.voucher = makeString(voucher);
 
-  const clickId = data.hasOwnProperty('clickId') ? data.clickId : getClickId(data, eventData);
+  const clickId =
+    data.hasOwnProperty('clickIdAwc') || data.hasOwnProperty('clickIdSnAwc')
+      ? getClickIdFromUIField(data)
+      : getClickIdFromCookie(data, eventData);
   if (clickId) order.awc = clickId;
 
   if (data.publisherId) order.publisherId = makeInteger(data.publisherId);
