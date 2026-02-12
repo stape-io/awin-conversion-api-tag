@@ -3,6 +3,7 @@
 The **Awin Conversion API Tag** allows you to send conversion data directly from your server container to Awin's [Conversion API](https://developer.awin.com/apidocs/conversion-api), ensuring accurate, consent-aware, and cookie-independent tracking for affiliate conversions.
 
 It supports both **Page View** events (for cookie creation) and **Conversion** events, with full support for deduplication logic, cashback flows, commission groups, product-level tracking, and enhanced logging.
+
 - **Page View**: Captures Awin tracking parameters from the URL and saves them as cookies for later use.
 - **Conversion**: Sends a server-to-server request (postback) with conversion data to Awin, using information from cookies or event data.
 
@@ -25,7 +26,7 @@ The tag captures two key pieces of information:
 1.  **Click IDs**: It looks for Awin's click identifiers in the URL.
     - `awc`: The standard Awin Click ID.
     - `awaid` and `gclid`: Awin and Google Click IDs used together for specific tracking scenarios.
-    - These values are stored in the `awin_awc` cookie; or `awin_sn_awc` cookie, if `sn=1` is present in the URL and the *Unconditional Cashback & Rewards Tracking* checkbox is enabled.
+    - These values are stored in the `awin_awc` cookie; or `awin_sn_awc` cookie, if `sn=1` is present in the URL and the _Unconditional Cashback & Rewards Tracking_ checkbox is enabled.
 
 2.  **Last Click Referrer Channel**: Also known as the Deduplication Channel, this determines the source of the traffic to prevent duplicate commissions. The tag analyzes URL parameters (like `source`, `utm_source`, `gclid`, etc.) and the page referrer to determine the channel. The result is stored in the `awin_source` cookie and can be one of the following values:
     - `aw`: Set if an Awin source value (e.g., "awin", "aw") is found in the deduplication parameters, or if an Awin Click ID is present in the URL (only if explicitly enabled).
@@ -48,16 +49,17 @@ When the action is set to `Conversion`, the tag sends the final transaction data
 - **Currency**: The currency of the conversion.
 - **Channel**: The channel responsible for the conversion (e.g., `aw`). It can be retrieved from the `awin_source` cookie set by the Page View action.
 
-
 The tag also requires at least one of the following for attribution:
+
 - **Awin Click ID (awc)**
 - **Voucher Code**
 - **Publisher ID** and **Click Time**
 
 ### Optional Parameters
+
 - **Commission Groups**: Defines the commission structure for the order. This can be provided in several formats:
-  - If left blank, the commission group `DEFAULT` and the *Amount* field, as commission group value, will be used.
-  - A single group name where the *Amount* field is used as the commission value (e.g., `DVD`).
+  - If left blank, the commission group `DEFAULT` and the _Amount_ field, as commission group value, will be used.
+  - A single group name where the _Amount_ field is used as the commission value (e.g., `DVD`).
   - A full set of groups and their respective amounts (e.g., `CD:11.10|DVD:14.99`).
   - An array of objects (e.g., `[ { "code": "CD", "amount": 11.10 }, { "code": "DVD", "amount": 14.99 } ]`).
 - **Basket**: Product-level data for the transaction. The tag can automatically use `items` from the event data. At least the `id`, `name`, `price` and quan`tity must be provided for each product.
@@ -80,6 +82,7 @@ This section controls how the tag handles user consent for setting and reading a
 
 - [What is Conversion API? (Awin)](https://advertiser-success.awin.com/s/article/What-is-Conversion-API)
 - [Conversion API Documentation](https://developer.awin.com/apidocs/conversion-api)
+- [Step-by-step guide on how to configure Awin CAPI tag](https://stape.io/helpdesk/documentation/awin-conversion-api-tag)
 
 ## Open Source
 
