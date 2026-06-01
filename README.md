@@ -2,7 +2,7 @@
 
 The **Awin Conversion API Tag** allows you to send conversion data directly from your server container to Awin's [Conversion API](https://developer.awin.com/apidocs/conversion-api), ensuring accurate, consent-aware, and cookie-independent tracking for affiliate conversions.
 
-It supports both **Page View** events (for cookie creation) and **Conversion** events, with full support for deduplication logic, cashback flows, commission groups, product-level tracking, and enhanced logging.
+It supports both **Page View** events (for cookie creation) and **Conversion** events, with full support for deduplication logic, cashback flows, commission groups, and product-level tracking.
 
 - **Page View**: Captures Awin tracking parameters from the URL and saves them as cookies for later use.
 - **Conversion**: Sends a server-to-server request (postback) with conversion data to Awin, using information from cookies or event data.
