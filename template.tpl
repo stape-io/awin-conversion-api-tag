@@ -50,13 +50,11 @@ ___TEMPLATE_PARAMETERS___
     ],
     "simpleValueType": true,
     "defaultValue": "pageView",
-    "help": "\u003cb\u003ePage View\u003c/b\u003e \n\u003cbr/\u003e\nCaptures tracking parameters from the URL and saves them to cookies for attribution:\n\u003cul\u003e\n\u003cli\u003e\u003cb\u003eClick IDs\u003c/b\u003e \u003ci\u003e{awc}\u003c/i\u003e or \u003ci\u003e{awaid}\u003c/i\u003e + \u003ci\u003e{gclid}\u003c/i\u003e URL parameters values are saved into the \u003ci\u003eawin_awc\u003c/i\u003e cookie, or \u003ci\u003eawin_sn_awc\u003c/i\u003e cookie (if the \u003ci\u003eEnable Unconditional Cashback \u0026 Rewards Tracking\u003c/i\u003e is selected on the \u003ci\u003eCookie Consent Settings section\u003c/i\u003e).\u003c/li\u003e \n\u003cli\u003e\u003cb\u003eLast Click Referrer Channel\u003c/b\u003e (\u003cb\u003eDeduplication Channel\u003c/b\u003e) parameters \u003ci\u003e{utm_source}\u003c/i\u003e or \u003ci\u003e{source}\u003c/i\u003e (or the user-specified list) URL parameter value is saved into the \u003ci\u003eawin_source\u003c/i\u003e cookie; or Organic and Direct traffic if no parameter is found.\n\u003cbr/\u003e\nThe possible values are: \u003cb\u003eaw\u003c/b\u003e, \u003cb\u003eother\u003c/b\u003e, \u003cb\u003eorganic\u003c/b\u003e and \u003cb\u003edirect\u003c/b\u003e.\n\u003c/li\u003e\n\u003c/ul\u003e\n\u003cbr/\u003e\n\u003cb\u003eConversion\u003c/b\u003e\n\u003cbr/\u003e\nSends a postback with conversion data to Awin."
+    "help": "\u003cb\u003ePage View\u003c/b\u003e \n\u003cbr/\u003e\nCaptures tracking parameters from the URL and saves them to cookies for attribution:\n\u003cul\u003e\n\u003cli\u003e\u003cb\u003eClick IDs\u003c/b\u003e \u003ci\u003eawc\u003c/i\u003e or \u003ci\u003eawaid\u003c/i\u003e + \u003ci\u003egclid\u003c/i\u003e URL parameters values are saved into the \u003ci\u003eawin_awc\u003c/i\u003e cookie, or \u003ci\u003eawin_sn_awc\u003c/i\u003e cookie (if the \u003ci\u003eEnable Unconditional Cashback \u0026 Rewards Tracking\u003c/i\u003e is selected on the \u003ci\u003eCookie Consent Settings section\u003c/i\u003e).\u003c/li\u003e \n\u003cli\u003e\u003cb\u003eLast Click Referrer Channel\u003c/b\u003e (\u003cb\u003eDeduplication Channel\u003c/b\u003e) parameters \u003ci\u003eutm_source\u003c/i\u003e or \u003ci\u003esource\u003c/i\u003e (or the user-specified list) URL parameter value is saved into the \u003ci\u003eawin_source\u003c/i\u003e cookie; or Organic and Direct traffic if no parameter is found.\n\u003cbr/\u003e\nThe possible values are: \u003cb\u003eaw\u003c/b\u003e, \u003cb\u003eother\u003c/b\u003e, \u003cb\u003eorganic\u003c/b\u003e and \u003cb\u003edirect\u003c/b\u003e.\n\u003c/li\u003e\n\u003cli\u003e\n\u003cb\u003ePublisher ID and Click Time\u003c/b\u003e are saved into the \u003ci\u003eawin_pubid\u003c/i\u003e cookie. The Publisher ID can be present in the \u003ci\u003eid\u003c/i\u003e, \u003ci\u003eawinaffid\u003c/i\u003e, \u003ci\u003ea\u003c/i\u003e or \u003ci\u003er\u003c/i\u003e URL parameters.\n\u003c/li\u003e\n\u003c/ul\u003e\n\u003cbr/\u003e\n\u003cb\u003eConversion\u003c/b\u003e\n\u003cbr/\u003e\nSends a postback with conversion data to Awin."
   },
   {
     "type": "GROUP",
     "name": "pageViewGroup",
-    "displayName": "",
-    "groupStyle": "NO_ZIPPY",
     "subParams": [
       {
         "type": "TEXT",
@@ -114,6 +112,13 @@ ___TEMPLATE_PARAMETERS___
             "valueHint": "site1.,site2."
           }
         ]
+      },
+      {
+        "type": "CHECKBOX",
+        "name": "storePublisherIdAndClickTime",
+        "checkboxText": "Store Publisher ID and Click Time",
+        "simpleValueType": true,
+        "help": "Saves the Publisher ID URL parameter (if present) and a timestamp in the  \u003ci\u003eawin_pubid\u003c/i\u003e  cookie to improve conversion attribution."
       },
       {
         "type": "GROUP",
@@ -183,8 +188,6 @@ ___TEMPLATE_PARAMETERS___
   {
     "type": "GROUP",
     "name": "conversionGroup",
-    "displayName": "",
-    "groupStyle": "NO_ZIPPY",
     "subParams": [
       {
         "type": "TEXT",
@@ -198,6 +201,37 @@ ___TEMPLATE_PARAMETERS___
         ],
         "help": "Add the \u003ci\u003eOAuth2 Token\u003c/i\u003e obtained on the \u003ca href\u003d\"https://ui.awin.com/awin-api\"\u003eAwin API Credentials\u003c/a\u003e page.\n\u003cbr/\u003e\n\u003ca href\u003d\"https://developer.awin.com/apidocs/api-authentication\"\u003eLearn more\u003c/a\u003e.",
         "valueHint": "9a2f44b9-aaaa-47d3-98e8-a8dcba5f4c1a"
+      },
+      {
+        "type": "TEXT",
+        "name": "advertiserId",
+        "displayName": "Merchant/Advertiser ID",
+        "simpleValueType": true,
+        "valueValidators": [
+          {
+            "type": "NON_EMPTY"
+          }
+        ],
+        "help": "ID of your advertiser account."
+      },
+      {
+        "type": "SELECT",
+        "name": "isTest",
+        "displayName": "Test Mode",
+        "macrosInSelect": true,
+        "selectItems": [
+          {
+            "value": false,
+            "displayValue": "false"
+          },
+          {
+            "value": true,
+            "displayValue": "true"
+          }
+        ],
+        "simpleValueType": true,
+        "defaultValue": false,
+        "help": "If \u003ci\u003etrue\u003c/i\u003e, the tag will fire in test mode and the reported conversion will be ignored."
       },
       {
         "type": "SELECT",
@@ -222,18 +256,6 @@ ___TEMPLATE_PARAMETERS___
         "type": "LABEL",
         "name": "parametersOverrideGroupHelpText",
         "displayName": "\u003cbr/\u003e\nBy default, the tag will parse all available parameters from the \u003ci\u003eeventData\u003c/i\u003e. Check the Help Texts from the fields below for more details.\n\u003cbr/\u003e\n\u003cbr/\u003e"
-      },
-      {
-        "type": "TEXT",
-        "name": "advertiserId",
-        "displayName": "Merchant/Advertiser ID",
-        "simpleValueType": true,
-        "valueValidators": [
-          {
-            "type": "NON_EMPTY"
-          }
-        ],
-        "help": "ID of your advertiser account."
       },
       {
         "type": "TEXT",
@@ -303,7 +325,7 @@ ___TEMPLATE_PARAMETERS___
         "name": "publisherId",
         "displayName": "Publisher ID",
         "simpleValueType": true,
-        "help": "ID of the Publisher that generated the conversion.\n\u003cbr/\u003e\nRequired if \u003ci\u003eClick Time\u003c/i\u003e is present.\n\u003cbr/\u003e\u003cbr/\u003e\nAny of the following \u003cb\u003emust\u003c/b\u003e be present for a conversion to be valid:\n\u003cul\u003e\n\u003cli\u003e\u003ci\u003eAwin Click ID\u003c/i\u003e or;\u003c/li\u003e\n\u003cli\u003e\u003ci\u003eVoucher/Discount Code\u003c/i\u003e or;\u003c/li\u003e\n\u003cli\u003e\u003ci\u003ePublisher ID\u003c/i\u003e and \u003ci\u003eClick Time\u003c/i\u003e\u003c/li\u003e\n\u003c/ul\u003e",
+        "help": "ID of the Publisher that generated the conversion. Its value can be present in one of the following URL parameters in the landing page URL: \u003ci\u003eid\u003c/i\u003e, \u003ci\u003eawinaffid\u003c/i\u003e, \u003ci\u003ea\u003c/i\u003e or \u003ci\u003er\u003c/i\u003e:\n\u003cbr/\u003e\u003cbr/\u003e\nRequired if \u003ci\u003eClick Time\u003c/i\u003e is present.\n\u003cbr/\u003e\u003cbr/\u003e\nIf empty and \u003ci\u003eStore Publisher ID and Click Time\u003ci\u003e is enabled in the \u003ci\u003ePage View\u003c/i\u003e Event Type, this uses the value from the \u003ci\u003eawin_pubid\u003c/i\u003e cookie set on landing pages. If you do not wish to fallback to the cookie value, pass your own value to this field.\n\u003cbr/\u003e\u003cbr/\u003e\nAny of the following \u003cb\u003emust\u003c/b\u003e be present for a conversion to be valid:\n\u003cul\u003e\n\u003cli\u003e\u003ci\u003eAwin Click ID\u003c/i\u003e or;\u003c/li\u003e\n\u003cli\u003e\u003ci\u003eVoucher/Discount Code\u003c/i\u003e or;\u003c/li\u003e\n\u003cli\u003e\u003ci\u003ePublisher ID\u003c/i\u003e and \u003ci\u003eClick Time\u003c/i\u003e\u003c/li\u003e\n\u003c/ul\u003e",
         "valueValidators": [
           {
             "type": "NON_EMPTY",
@@ -323,7 +345,7 @@ ___TEMPLATE_PARAMETERS___
         "name": "clickTime",
         "displayName": "Click Time",
         "simpleValueType": true,
-        "help": "The timestamp of when the click that led to the conversion happened as a Unix timestamp in seconds (length: 10).\n\u003cbr/\u003e\nRequired if \u003ci\u003ePublisher ID\u003c/i\u003e is present.\n\u003cbr/\u003e\u003cbr/\u003e\nAny of the following \u003cb\u003emust\u003c/b\u003e be present for a conversion to be valid:\n\u003cul\u003e\n\u003cli\u003e\u003ci\u003eAwin Click ID\u003c/i\u003e or;\u003c/li\u003e\n\u003cli\u003e\u003ci\u003eVoucher/Discount Code\u003c/i\u003e or;\u003c/li\u003e\n\u003cli\u003e\u003ci\u003ePublisher ID\u003c/i\u003e and \u003ci\u003eClick Time\u003c/i\u003e\u003c/li\u003e\n\u003c/ul\u003e",
+        "help": "The timestamp of when the click that led to the conversion happened as a Unix timestamp in seconds (length: 10).\n\u003cbr/\u003e\u003cbr/\u003e\nRequired if \u003ci\u003ePublisher ID\u003c/i\u003e is present.\n\u003cbr/\u003e\u003cbr/\u003e\nIf empty and \u003ci\u003eStore Publisher ID and Click Time\u003ci\u003e is enabled in the \u003ci\u003ePage View\u003c/i\u003e Event Type, this uses the value from the \u003ci\u003eawin_pubid\u003c/i\u003e cookie set on landing pages. If you do not wish to fallback to the cookie value, pass your own value to this field.\n\u003cbr/\u003e\u003cbr/\u003e\nAny of the following \u003cb\u003emust\u003c/b\u003e be present for a conversion to be valid:\n\u003cul\u003e\n\u003cli\u003e\u003ci\u003eAwin Click ID\u003c/i\u003e or;\u003c/li\u003e\n\u003cli\u003e\u003ci\u003eVoucher/Discount Code\u003c/i\u003e or;\u003c/li\u003e\n\u003cli\u003e\u003ci\u003ePublisher ID\u003c/i\u003e and \u003ci\u003eClick Time\u003c/i\u003e\u003c/li\u003e\n\u003c/ul\u003e",
         "valueValidators": [
           {
             "type": "NON_EMPTY",
@@ -337,6 +359,20 @@ ___TEMPLATE_PARAMETERS___
             "errorMessage": "Click Time must not be blank if Publisher ID is set."
           }
         ]
+      },
+      {
+        "type": "TEXT",
+        "name": "linkId",
+        "displayName": "Link ID",
+        "simpleValueType": true,
+        "help": "Optional.\n\u003cbr/\u003e\u003cbr/\u003e\nLink ID refers to a numeric identifier associated with a banner or creative used in tracking and reporting systems.\n\u003cbr/\u003e\nIts value can be present in one of the following URL parameters in the landing page URL: \u003ci\u003elinkid\u003c/i\u003e or \u003ci\u003es\u003c/i\u003e.\n\u003c/br\u003e\n\u003ca href\u003d\"https://success.awin.com/s/article/What-does-an-affiliate-link-look-like?language\u003den_US\"\u003eLearn more\u003c/a\u003e."
+      },
+      {
+        "type": "TEXT",
+        "name": "clickRef",
+        "displayName": "Click Ref",
+        "simpleValueType": true,
+        "help": "Optional.\n\u003cbr/\u003e\u003cbr/\u003e\nA click reference is custom tracking references which is added to affiliate links that help you track additional data.\n\u003cbr/\u003e\nIts value can be present \u003ci\u003eclickref\u003c/i\u003e URL parameter in the landing page.\n\u003c/br\u003e\n\u003ca href\u003d\"https://success.awin.com/s/article/What-is-click-reference-and-what-can-I-use-this-for?language\u003den_US\"\u003eLearn more\u003c/a\u003e."
       },
       {
         "type": "SELECT",
@@ -363,25 +399,6 @@ ___TEMPLATE_PARAMETERS___
         "displayName": "Transaction Timestamp",
         "simpleValueType": true,
         "help": "The timestamp of when the conversion happened as a Unix timestamp in seconds (length: 10).\n\u003cbr/\u003e\u003cbr/\u003e\nIf you are not sending the conversion in real time, use this field to share the timestamp of when the conversion happened. You must contact Awin to activate the usage of this field."
-      },
-      {
-        "type": "SELECT",
-        "name": "isTest",
-        "displayName": "Test Mode",
-        "macrosInSelect": true,
-        "selectItems": [
-          {
-            "value": false,
-            "displayValue": "false"
-          },
-          {
-            "value": true,
-            "displayValue": "true"
-          }
-        ],
-        "simpleValueType": true,
-        "defaultValue": false,
-        "help": "If \u003ci\u003etrue\u003c/i\u003e, the tag will fire in test mode and the reported conversion will be ignored."
       },
       {
         "type": "TEXT",
@@ -581,6 +598,7 @@ const getAllEventData = require('getAllEventData');
 const getContainerVersion = require('getContainerVersion');
 const getCookieValues = require('getCookieValues');
 const getRequestHeader = require('getRequestHeader');
+const getTimestampMillis = require('getTimestampMillis');
 const getType = require('getType');
 const JSON = require('JSON');
 const logToConsole = require('logToConsole');
@@ -597,14 +615,7 @@ const setCookie = require('setCookie');
 const eventData = getAllEventData();
 const useOptimisticScenario = isUIFieldTrue(data.useOptimisticScenario);
 
-if (!isExecutionConsentGivenOrNotRequired()) {
-  return data.gtmOnSuccess();
-}
-
-const url = eventData.page_location || getRequestHeader('referer');
-if (url && url.lastIndexOf('https://gtm-msr.appspot.com/', 0) === 0) {
-  return data.gtmOnSuccess();
-}
+if (shouldExitEarly(data, eventData)) return;
 
 const actionHandlers = {
   pageView: handlePageViewEvent,
@@ -656,13 +667,21 @@ function parseClickIdFromUrl(eventData) {
   const url = eventData.page_location || getRequestHeader('referer');
   if (!url) return;
 
-  const searchParams = parseUrl(url).searchParams;
+  const searchParams = (parseUrl(url) || {}).searchParams;
   if (searchParams.awc || (searchParams.awaid && searchParams.gclid)) {
     const clickId = searchParams.awc
       ? searchParams.awc
       : 'gclid_' + searchParams.awaid + '_' + searchParams.gclid;
     return clickId;
   }
+}
+
+function parsePublisherIdFromUrl(eventData) {
+  const url = eventData.page_location || getRequestHeader('referer');
+  if (!url) return;
+
+  const searchParams = (parseUrl(url) || {}).searchParams;
+  return searchParams.awinaffid || searchParams.id || searchParams.a || searchParams.r;
 }
 
 function getClickIdFromUIField(data) {
@@ -686,6 +705,19 @@ function getClickIdFromCookie(data, eventData) {
   }
 
   return;
+}
+
+function getPublisherIdAndClickTimeFromCookie(data, eventData) {
+  if (isConsentDeclined(data, eventData) && !data.enableCashbackTracking) return;
+
+  const publisherIdAndClickTimeCookie = getCookieValues('awin_pubid')[0] || '';
+  const publisherIdAndClickTime = publisherIdAndClickTimeCookie
+    .split('|')
+    .map((value) => makeInteger(value));
+
+  return publisherIdAndClickTime.length === 2
+    ? { publisherId: publisherIdAndClickTime[0], clickTime: publisherIdAndClickTime[1] }
+    : undefined;
 }
 
 function parseDeduplicationParamFromUrl(data, eventData) {
@@ -789,6 +821,14 @@ function handlePageViewEvent(data, eventData) {
 
     if (deduplicationParamValue && (!deduplicationCookie || shouldOverwriteCookie)) {
       setCookie('awin_source', deduplicationParamValue, cookieOptions, false);
+    }
+
+    if (data.storePublisherIdAndClickTime) {
+      const publisherId = parsePublisherIdFromUrl(eventData);
+      if (publisherId) {
+        const timestamp = makeInteger(getTimestampMillis() / 1000);
+        setCookie('awin_pubid', publisherId + '|' + timestamp, cookieOptions, false);
+      }
     }
   }
 
@@ -920,14 +960,24 @@ function mapRequestData(data, eventData) {
       : getClickIdFromCookie(data, eventData);
   if (clickId) order.awc = clickId;
 
-  if (data.publisherId) order.publisherId = makeInteger(data.publisherId);
-  if (data.clickTime) order.clickTime = makeInteger(data.clickTime);
+  const publisherIdAndClickTime = getPublisherIdAndClickTimeFromCookie(data, eventData);
+  if (data.hasOwnProperty('publisherId') && data.hasOwnProperty('clickTime')) {
+    if (data.publisherId) order.publisherId = makeInteger(data.publisherId);
+    if (data.clickTime) order.clickTime = makeInteger(data.clickTime);
+  } else if (publisherIdAndClickTime) {
+    order.publisherId = publisherIdAndClickTime.publisherId;
+    order.clickTime = publisherIdAndClickTime.clickTime;
+  }
 
   // Optional
 
   if (data.customerAcquisition) order.customerAcquisition = data.customerAcquisition;
 
   if (data.transactionTime) order.transactionTime = makeInteger(data.transactionTime);
+
+  if (data.linkId) order.linkId = makeInteger(data.linkId);
+
+  if (data.clickRef) order.clickRef = makeString(data.clickRef);
 
   order.isTest = isUIFieldTrue(data.isTest);
 
@@ -1037,6 +1087,23 @@ function sendRequest(data, requestData) {
   Helpers
 ==============================================================================*/
 
+function getUrl(eventData) {
+  return eventData.page_location || getRequestHeader('referer') || eventData.page_referrer;
+}
+
+function shouldExitEarly(data, eventData) {
+  if (!isExecutionConsentGivenOrNotRequired(data, eventData)) {
+    data.gtmOnSuccess();
+    return true;
+  }
+
+  const url = getUrl(eventData);
+  if (url && url.lastIndexOf('https://gtm-msr.appspot.com/', 0) === 0) {
+    data.gtmOnSuccess();
+    return true;
+  }
+}
+
 function enc(data) {
   if (['null', 'undefined'].indexOf(getType(data)) !== -1) data = '';
   return encodeUriComponent(makeString(data));
@@ -1059,7 +1126,7 @@ function isUIFieldTrue(field) {
   return [true, 'true'].indexOf(field) !== -1;
 }
 
-function isExecutionConsentGivenOrNotRequired() {
+function isExecutionConsentGivenOrNotRequired(data, eventData) {
   if (data.adStorageConsent !== 'required') return true;
   if (eventData.consent_state) return !!eventData.consent_state.ad_storage;
   const xGaGcs = eventData['x-ga-gcs'] || ''; // x-ga-gcs is a string like "G110"
@@ -1068,6 +1135,7 @@ function isExecutionConsentGivenOrNotRequired() {
 
 function log(rawDataToLog) {
   const traceId = getRequestHeader('trace-id');
+  rawDataToLog.traceId = traceId;
   logToConsole(JSON.stringify(rawDataToLog));
 }
 
@@ -1270,6 +1338,10 @@ ___SERVER_PERMISSIONS___
               {
                 "type": 1,
                 "string": "awin_sn_awc"
+              },
+              {
+                "type": 1,
+                "string": "awin_pubid"
               }
             ]
           }
@@ -1415,6 +1487,53 @@ ___SERVER_PERMISSIONS___
                   {
                     "type": 1,
                     "string": "awin_sn_awc"
+                  },
+                  {
+                    "type": 1,
+                    "string": "*"
+                  },
+                  {
+                    "type": 1,
+                    "string": "*"
+                  },
+                  {
+                    "type": 1,
+                    "string": "any"
+                  },
+                  {
+                    "type": 1,
+                    "string": "any"
+                  }
+                ]
+              },
+              {
+                "type": 3,
+                "mapKey": [
+                  {
+                    "type": 1,
+                    "string": "name"
+                  },
+                  {
+                    "type": 1,
+                    "string": "domain"
+                  },
+                  {
+                    "type": 1,
+                    "string": "path"
+                  },
+                  {
+                    "type": 1,
+                    "string": "secure"
+                  },
+                  {
+                    "type": 1,
+                    "string": "session"
+                  }
+                ],
+                "mapValue": [
+                  {
+                    "type": 1,
+                    "string": "awin_pubid"
                   },
                   {
                     "type": 1,
@@ -1799,6 +1918,31 @@ scenarios:
     assertApi('gtmOnFailure').wasNotCalled();
     assertApi('setCookie').wasCalledWith('awin_awc', 'awcValue', expectedOverwrittenCookieOptions, false);
     assertApi('setCookie').wasCalledWith('awin_awc', 'awcValue', expectedOverwrittenCookieOptions, false);
+- name: '[Page View] Publisher ID and Click Time cookie is set when storePublisherIdAndClickTime
+    is enabled'
+  code: "const originalMockData = setAllMockDataByEventType('pageView', {\n  storePublisherIdAndClickTime:\
+    \ true\n});\n\n[\n  { page_location: 'https://example.com?awinaffid=12345', expectedPubId:\
+    \ '12345' },\n  { page_location: 'https://example.com?id=67890', expectedPubId:\
+    \ '67890' },\n  { page_location: 'https://example.com?a=11111', expectedPubId:\
+    \ '11111' },\n  { page_location: 'https://example.com?r=22222', expectedPubId:\
+    \ '22222' }\n].forEach(scenario => {\n  setGetAllEventData({ page_location: scenario.page_location\
+    \ });\n  \n  runCode(originalMockData);\n\n  assertApi('gtmOnSuccess').wasCalled();\n\
+    \  assertApi('gtmOnFailure').wasNotCalled();\n  assertApi('setCookie').wasCalledWith('awin_pubid',\
+    \ scenario.expectedPubId + '|1747945830', expectedCookieOptions, false);\n});"
+- name: '[Page View] Publisher ID and Click Time cookie is NOT set when storePublisherIdAndClickTime
+    is disabled'
+  code: |-
+    const disabledMockData = setAllMockDataByEventType('pageView', {
+      storePublisherIdAndClickTime: false
+    });
+    setGetAllEventData({ page_location: 'https://example.com?awinaffid=12345' });
+
+    runCode(disabledMockData);
+
+
+    assertApi('gtmOnSuccess').wasCalled();
+    assertApi('gtmOnFailure').wasNotCalled();
+    assertApi('setCookie').wasNotCalledWith('awin_pubid', '12345|1747945830', expectedCookieOptions, false);
 - name: '[Conversion] Request is not sent if base, attribution and basket required
     parameters are missing'
   code: "const originalMockData = setAllMockDataByEventType('conversion');\n\n[\n\
@@ -1922,6 +2066,45 @@ scenarios:
     \    '1': 'gtm_s2s_stape_containerId',\n    '2': 'test',\n    '3': 123,\n    '10':\
     \ true\n  });\n  callback(200);\n});\n\nrunCode(mockData);\n\nassertApi('gtmOnSuccess').wasCalled();\n\
     assertApi('gtmOnFailure').wasNotCalled();"
+- name: '[Conversion] Publisher ID and Click Time cookie read and UI precedence'
+  code: |
+    const originalMockData = setAllMockDataByEventType('conversion');
+    let currentScenario;
+
+    mock('getCookieValues', (cookieName) => {
+      if (cookieName === 'awin_pubid') return ['12345|1747945830'];
+      return [];
+    });
+
+    mock('sendHttpRequest', (requestUrl, callback, requestOptions, requestBody) => {
+      const parsedBody = JSON.parse(requestBody);
+      assertThat(parsedBody.orders[0].publisherId).isEqualTo(currentScenario.expectedPublisherId);
+      assertThat(parsedBody.orders[0].clickTime).isEqualTo(currentScenario.expectedClickTime);
+      callback(200);
+    });
+
+    [
+      { uiPublisherId: undefined, uiClickTime: undefined, expectedPublisherId: 12345, expectedClickTime: 1747945830 },
+      { uiPublisherId: '99999', uiClickTime: '88888888', expectedPublisherId: 99999, expectedClickTime: 88888888 }
+    ].forEach(scenario => {
+      currentScenario = scenario;
+      const copyMockData = JSON.parse(JSON.stringify(originalMockData));
+      if (scenario.uiPublisherId) {
+        copyMockData.publisherId = scenario.uiPublisherId;
+      } else {
+        Object.delete(copyMockData, 'publisherId');
+      }
+      if (scenario.uiClickTime) {
+        copyMockData.clickTime = scenario.uiClickTime;
+      } else {
+        Object.delete(copyMockData, 'clickTime');
+      }
+
+      runCode(copyMockData);
+
+      assertApi('gtmOnSuccess').wasCalled();
+      assertApi('gtmOnFailure').wasNotCalled();
+    });
 - name: '[Conversion] Request Body is correctly built and sent'
   code: "const originalMockData = setAllMockDataByEventType('conversion');\nsetGetAllEventData();\n\
     \nmock('getContainerVersion', () => {\n  return {\n    containerId: 'containerId'\n\
@@ -1956,13 +2139,14 @@ scenarios:
     \ callback(200);\n  });\n  \n  runCode(copyMockData);\n  \n  assertApi('gtmOnSuccess').wasCalled();\n\
     \  assertApi('gtmOnFailure').wasNotCalled();\n});\n\n"
 setup: "const JSON = require('JSON');\nconst Promise = require('Promise');\nconst\
-  \ parseUrl = require('parseUrl');\nconst Object = require('Object');\n\nfunction\
-  \ mergeObj(target, source) {\n  for (const key in source) {\n    if (source.hasOwnProperty(key))\
-  \ target[key] = source[key];\n  }\n  return target;\n}\n\nconst setGetAllEventData\
-  \ = (objToBeMerged) => {\n  mock('getAllEventData', mergeObj({\n    'x-ga-protocol_version':\
-  \ '2',\n    'x-ga-measurement_id': 'G-123ABC',\n    'x-ga-gtm_version': '45je55e1za200',\n\
-  \    'x-ga-page_id': 1747422523211,\n    'x-ga-gcd': '13l3l3l3l1l1',\n    'x-ga-npa':\
-  \ '0',\n    'x-ga-dma': '0',\n    'x-ga-mp2-tag_exp':\n      '101509157~103116025~103130498~103130500~103136993~103136995~103200001~103207802~103211513~103233427~103252644~103252646~103263073~103301114~103301116',\n\
+  \ parseUrl = require('parseUrl');\nconst Object = require('Object');\nconst callLater\
+  \ = require('callLater');\n\nfunction mergeObj(target, source) {\n  for (const key\
+  \ in source) {\n    if (source.hasOwnProperty(key)) target[key] = source[key];\n\
+  \  }\n  return target;\n}\n\nconst setGetAllEventData = (objToBeMerged) => {\n \
+  \ mock('getAllEventData', mergeObj({\n    'x-ga-protocol_version': '2',\n    'x-ga-measurement_id':\
+  \ 'G-123ABC',\n    'x-ga-gtm_version': '45je55e1za200',\n    'x-ga-page_id': 1747422523211,\n\
+  \    'x-ga-gcd': '13l3l3l3l1l1',\n    'x-ga-npa': '0',\n    'x-ga-dma': '0',\n \
+  \   'x-ga-mp2-tag_exp':\n      '101509157~103116025~103130498~103130500~103136993~103136995~103200001~103207802~103211513~103233427~103252644~103252646~103263073~103301114~103301116',\n\
   \    client_id: 'AUJctU7H7hBB/aMuhE4pKwGu5DWDdklg5abyyyn8i/I=.1747154479',\n   \
   \ 'x-ga-ecid': '1294673677',\n    language: 'en-us',\n    screen_resolution: '1512x982',\n\
   \    event_location: { country: 'BR', region: 'SP' },\n    event_id: '101509157~103116025~103130498',\n\
@@ -2003,16 +2187,12 @@ setup: "const JSON = require('JSON');\nconst Promise = require('Promise');\ncons
   \    quantity: 2,\n        item_group_id: 'xyz'\n      }\n    ]\n  }, objToBeMerged\
   \ || {}));\n};\n\nconst expectedCookieOptions = {\n  domain: 'auto',\n  samesite:\
   \ 'Lax',\n  path: '/',\n  secure: true,\n  httpOnly: false,\n  'max-age': 31536000\n\
-  };\n\nconst expectedBigQuerySettings = {\n  logBigQueryProjectId: 'logBigQueryProjectId',\n\
-  \  logBigQueryDatasetId: 'logBigQueryDatasetId',\n  logBigQueryTableId: 'logBigQueryTableId'\n\
   };\n\nconst requiredConsoleKeys = ['Type', 'TraceId', 'Name'];\nconst requiredBqKeys\
   \ = ['timestamp', 'type', 'trace_id', 'tag_name'];\nconst expectedBqOptions = {\
   \ ignoreUnknownValues: true };\n\nconst mockData = {\n  useOptimisticScenario: false,\n\
-  \  adStorageConsent: 'optional',\n  logBigQueryProjectId: expectedBigQuerySettings.logBigQueryProjectId,\n\
-  \  logBigQueryDatasetId: expectedBigQuerySettings.logBigQueryDatasetId,\n  logBigQueryTableId:\
-  \ expectedBigQuerySettings.logBigQueryTableId\n};\n\nconst setAllMockDataByEventType\
-  \ = (type, objToBeMerged) => {\n  const mockDataByEventType = {\n    pageView: {\n\
-  \      type: 'pageView',\n      deduplicationQueryParameterNames: 'source,utm_source,fbclid,msclkid,gclid,gbraid,wbraid',\n\
+  \  adStorageConsent: 'optional',\n};\n\nconst setAllMockDataByEventType = (type,\
+  \ objToBeMerged) => {\n  const mockDataByEventType = {\n    pageView: {\n      type:\
+  \ 'pageView',\n      deduplicationQueryParameterNames: 'source,utm_source,fbclid,msclkid,gclid,gbraid,wbraid',\n\
   \      awinSourceValues: 'awin,aw',\n      considerAwinClickIdsAsAwinSourceChannel:\
   \ false,\n      includeOrganicTraffic: false,\n      cookieDomain: 'auto',\n   \
   \   cookieExpiration: '365',\n      cookieHttpOnly: false\n    },\n    conversion:\
@@ -2035,6 +2215,9 @@ setup: "const JSON = require('JSON');\nconst Promise = require('Promise');\ncons
 
 
 ___NOTES___
+
+2026-08-17 - Change Notes:
+  - Add support to store Publisher ID and Click Time on Page View for conversion attribution fallback
 
 2026-05-25 Change Notes:
  - Logging removal.

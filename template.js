@@ -4,6 +4,7 @@ const getAllEventData = require('getAllEventData');
 const getContainerVersion = require('getContainerVersion');
 const getCookieValues = require('getCookieValues');
 const getRequestHeader = require('getRequestHeader');
+const getTimestampMillis = require('getTimestampMillis');
 const getType = require('getType');
 const JSON = require('JSON');
 const logToConsole = require('logToConsole');
@@ -20,14 +21,7 @@ const setCookie = require('setCookie');
 const eventData = getAllEventData();
 const useOptimisticScenario = isUIFieldTrue(data.useOptimisticScenario);
 
-if (!isExecutionConsentGivenOrNotRequired()) {
-  return data.gtmOnSuccess();
-}
-
-const url = eventData.page_location || getRequestHeader('referer');
-if (url && url.lastIndexOf('https://gtm-msr.appspot.com/', 0) === 0) {
-  return data.gtmOnSuccess();
-}
+if (shouldExitEarly(data, eventData)) return;
 
 const actionHandlers = {
   pageView: handlePageViewEvent,
@@ -79,13 +73,21 @@ function parseClickIdFromUrl(eventData) {
   const url = eventData.page_location || getRequestHeader('referer');
   if (!url) return;
 
-  const searchParams = parseUrl(url).searchParams;
+  const searchParams = (parseUrl(url) || {}).searchParams;
   if (searchParams.awc || (searchParams.awaid && searchParams.gclid)) {
     const clickId = searchParams.awc
       ? searchParams.awc
       : 'gclid_' + searchParams.awaid + '_' + searchParams.gclid;
     return clickId;
   }
+}
+
+function parsePublisherIdFromUrl(eventData) {
+  const url = eventData.page_location || getRequestHeader('referer');
+  if (!url) return;
+
+  const searchParams = (parseUrl(url) || {}).searchParams;
+  return searchParams.awinaffid || searchParams.id || searchParams.a || searchParams.r;
 }
 
 function getClickIdFromUIField(data) {
@@ -109,6 +111,19 @@ function getClickIdFromCookie(data, eventData) {
   }
 
   return;
+}
+
+function getPublisherIdAndClickTimeFromCookie(data, eventData) {
+  if (isConsentDeclined(data, eventData) && !data.enableCashbackTracking) return;
+
+  const publisherIdAndClickTimeCookie = getCookieValues('awin_pubid')[0] || '';
+  const publisherIdAndClickTime = publisherIdAndClickTimeCookie
+    .split('|')
+    .map((value) => makeInteger(value));
+
+  return publisherIdAndClickTime.length === 2
+    ? { publisherId: publisherIdAndClickTime[0], clickTime: publisherIdAndClickTime[1] }
+    : undefined;
 }
 
 function parseDeduplicationParamFromUrl(data, eventData) {
@@ -212,6 +227,14 @@ function handlePageViewEvent(data, eventData) {
 
     if (deduplicationParamValue && (!deduplicationCookie || shouldOverwriteCookie)) {
       setCookie('awin_source', deduplicationParamValue, cookieOptions, false);
+    }
+
+    if (data.storePublisherIdAndClickTime) {
+      const publisherId = parsePublisherIdFromUrl(eventData);
+      if (publisherId) {
+        const timestamp = makeInteger(getTimestampMillis() / 1000);
+        setCookie('awin_pubid', publisherId + '|' + timestamp, cookieOptions, false);
+      }
     }
   }
 
@@ -343,14 +366,24 @@ function mapRequestData(data, eventData) {
       : getClickIdFromCookie(data, eventData);
   if (clickId) order.awc = clickId;
 
-  if (data.publisherId) order.publisherId = makeInteger(data.publisherId);
-  if (data.clickTime) order.clickTime = makeInteger(data.clickTime);
+  const publisherIdAndClickTime = getPublisherIdAndClickTimeFromCookie(data, eventData);
+  if (data.hasOwnProperty('publisherId') && data.hasOwnProperty('clickTime')) {
+    if (data.publisherId) order.publisherId = makeInteger(data.publisherId);
+    if (data.clickTime) order.clickTime = makeInteger(data.clickTime);
+  } else if (publisherIdAndClickTime) {
+    order.publisherId = publisherIdAndClickTime.publisherId;
+    order.clickTime = publisherIdAndClickTime.clickTime;
+  }
 
   // Optional
 
   if (data.customerAcquisition) order.customerAcquisition = data.customerAcquisition;
 
   if (data.transactionTime) order.transactionTime = makeInteger(data.transactionTime);
+
+  if (data.linkId) order.linkId = makeInteger(data.linkId);
+
+  if (data.clickRef) order.clickRef = makeString(data.clickRef);
 
   order.isTest = isUIFieldTrue(data.isTest);
 
@@ -460,6 +493,23 @@ function sendRequest(data, requestData) {
   Helpers
 ==============================================================================*/
 
+function getUrl(eventData) {
+  return eventData.page_location || getRequestHeader('referer') || eventData.page_referrer;
+}
+
+function shouldExitEarly(data, eventData) {
+  if (!isExecutionConsentGivenOrNotRequired(data, eventData)) {
+    data.gtmOnSuccess();
+    return true;
+  }
+
+  const url = getUrl(eventData);
+  if (url && url.lastIndexOf('https://gtm-msr.appspot.com/', 0) === 0) {
+    data.gtmOnSuccess();
+    return true;
+  }
+}
+
 function enc(data) {
   if (['null', 'undefined'].indexOf(getType(data)) !== -1) data = '';
   return encodeUriComponent(makeString(data));
@@ -482,7 +532,7 @@ function isUIFieldTrue(field) {
   return [true, 'true'].indexOf(field) !== -1;
 }
 
-function isExecutionConsentGivenOrNotRequired() {
+function isExecutionConsentGivenOrNotRequired(data, eventData) {
   if (data.adStorageConsent !== 'required') return true;
   if (eventData.consent_state) return !!eventData.consent_state.ad_storage;
   const xGaGcs = eventData['x-ga-gcs'] || ''; // x-ga-gcs is a string like "G110"
@@ -491,5 +541,6 @@ function isExecutionConsentGivenOrNotRequired() {
 
 function log(rawDataToLog) {
   const traceId = getRequestHeader('trace-id');
+  rawDataToLog.traceId = traceId;
   logToConsole(JSON.stringify(rawDataToLog));
 }

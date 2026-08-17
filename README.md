@@ -21,7 +21,7 @@ It supports both **Page View** events (for cookie creation) and **Conversion** e
 
 When the action is set to `Page View`, the tag's primary role is to capture attribution data from the landing page URL and store it in first-party cookies. This information is then used by the `Conversion` action to correctly attribute sales.
 
-The tag captures two key pieces of information:
+The tag captures three key pieces of information:
 
 1.  **Click IDs**: It looks for Awin's click identifiers in the URL.
     - `awc`: The standard Awin Click ID.
@@ -33,6 +33,8 @@ The tag captures two key pieces of information:
     - `other`: Set if the deduplication parameters do not match any known Awin values, or if other tracking parameters (like `gclid`, `fbclid`) are found but are not identified as Awin traffic.
     - `organic`: Set if the traffic comes from a known search engine and no other paid channel parameters are present (only if explicitly enabled).
     - `direct`: Set if none of the other conditions are met.
+
+3.  **Publisher ID and Click Time**: When **Store Publisher ID and Click Time** is enabled, the tag looks for publisher identifiers in URL parameters (`awinaffid`, `id`, `a`, or `r`) and saves the Publisher ID along with a timestamp into the `awin_pubid` cookie.
 
 ### Conversion
 
@@ -53,7 +55,7 @@ The tag also requires at least one of the following for attribution:
 
 - **Awin Click ID (awc)**
 - **Voucher Code**
-- **Publisher ID** and **Click Time**
+- **Publisher ID** and **Click Time** (if omitted in UI, the tag automatically falls back to values stored in the `awin_pubid` cookie)
 
 ### Optional Parameters
 
@@ -71,7 +73,7 @@ The tag also requires at least one of the following for attribution:
 
 ## Cookie Consent Settings
 
-This section controls how the tag handles user consent for setting and reading attribution cookies (`awin_awc`, `awin_sn_awc`, `awin_source`).
+This section controls how the tag handles user consent for setting and reading attribution cookies (`awin_awc`, `awin_sn_awc`, `awin_source`, `awin_pubid`).
 
 - **Consent Detection**: You can choose how the tag determines consent:
   - **Automatically**: The tag will check for consent signals from Google Consent Mode or Stape's Data Tag.
