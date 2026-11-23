@@ -1,6 +1,8 @@
 homepage: 'https://stape.io/'
 documentation: 'https://github.com/stape-io/awin-conversion-api-tag'
 versions:
+  - sha: d7bd633f3f2d48b79cd205ac1221eeeefa6cfae8
+    changeNotes: Read common cookie from eventData.common_cookie.
   - sha: d08d42d53965f402e221baf9584c13a4cd50d51c
     changeNotes: Add Publisher ID and Click Time cookie support.
   - sha: c41cdbbb01aa93c39ef886819b98a3bd41ae9578
