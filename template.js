@@ -95,7 +95,7 @@ function getClickIdFromUIField(data) {
 }
 
 function getClickIdFromCookie(data, eventData) {
-  const commonCookie = eventData.commonCookie || {};
+  const commonCookie = eventData.common_cookie || {};
   const awinAwcCookie = getCookieValues('awin_awc')[0] || commonCookie.awin_awc;
   const awinAwcSnCookie = getCookieValues('awin_sn_awc')[0] || commonCookie.awin_sn_awc;
   const clickIdFromUrl = parseClickIdFromUrl(eventData);
@@ -191,7 +191,7 @@ function parseDeduplicationParamFromUrl(data, eventData) {
 
 function getDeduplicationParamFromCookie(data, eventData) {
   if (isConsentDeclined(data, eventData) && !data.enableCashbackTracking) return;
-  return getCookieValues('awin_source')[0] || (eventData.commonCookie || {}).awin_source;
+  return getCookieValues('awin_source')[0] || (eventData.common_cookie || {}).awin_source;
 }
 
 function handlePageViewEvent(data, eventData) {
