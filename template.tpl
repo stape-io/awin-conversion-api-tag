@@ -689,7 +689,7 @@ function getClickIdFromUIField(data) {
 }
 
 function getClickIdFromCookie(data, eventData) {
-  const commonCookie = eventData.commonCookie || {};
+  const commonCookie = eventData.common_cookie || {};
   const awinAwcCookie = getCookieValues('awin_awc')[0] || commonCookie.awin_awc;
   const awinAwcSnCookie = getCookieValues('awin_sn_awc')[0] || commonCookie.awin_sn_awc;
   const clickIdFromUrl = parseClickIdFromUrl(eventData);
@@ -785,7 +785,7 @@ function parseDeduplicationParamFromUrl(data, eventData) {
 
 function getDeduplicationParamFromCookie(data, eventData) {
   if (isConsentDeclined(data, eventData) && !data.enableCashbackTracking) return;
-  return getCookieValues('awin_source')[0] || (eventData.commonCookie || {}).awin_source;
+  return getCookieValues('awin_source')[0] || (eventData.common_cookie || {}).awin_source;
 }
 
 function handlePageViewEvent(data, eventData) {
@@ -2215,6 +2215,9 @@ setup: "const JSON = require('JSON');\nconst Promise = require('Promise');\ncons
 
 
 ___NOTES___
+
+2026-11-23 - Change Notes:
+  - Fix the Event Data common cookie lookup: read eventData.common_cookie instead of eventData.commonCookie, which is never set, so awin_awc, awin_sn_awc and awin_source are now taken from the common cookie object when the cookies are missing
 
 2026-08-17 - Change Notes:
   - Add support to store Publisher ID and Click Time on Page View for conversion attribution fallback
